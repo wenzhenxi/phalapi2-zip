@@ -17,40 +17,50 @@
 
 ## 1. 安装使用
 
-此扩展只需要简单的把文件放到Library目录下即可使用使用方法如下:
 
-     $zip = new Zip_Lite();
+在项目的composer.json文件中，添加：
+
+```
+{
+    "require": {
+        "phalapi/redis": "2.0.*"
+    }
+}
+```
+
+配置好后，执行composer update更新操作即可。
+
+在index.php中注册
+\PhalApi\DI()->zip = function () {
+    return new \PhalApi\Zip\Lite();
+};
 
 
 遍历指定文件夹
-    
-     $zip  = new Zip_Lite();
-     $filelist = $zip->visitFile(文件夹路径);
+
+     $filelist = \PhalApi\DI()->zip->visitFile(文件夹路径);
      print "当前文件夹的文件:<p>\r\n";
      foreach($filelist as $file)
          printf("%s<br>\r\n", $file);
          
 压缩到服务器
 
-    $zip = new Zip_Lite();
-    $zip->Zip("需压缩的文件所在目录", "ZIP压缩文件名");
+    \PhalApi\DI()->zip->Zip("需压缩的文件所在目录", "ZIP压缩文件名");
     
     
 压缩并直接下载
     
-    $zip = new Zip_Lite();
-    $zip->ZipAndDownload("需压缩的文件所在目录");
+    \PhalApi\DI()->zip->ZipAndDownload("需压缩的文件所在目录");
         
         
         
 解压文件
     
-     $zip   = new Zip_Lite();
      $zipfile   = "ZIP压缩文件名";
      $savepath  = "解压缩目录名";
      $zipfile   = $unzipfile;
      $savepath  = $unziptarget;
-     $array     = $zip->GetZipInnerFilesInfo($zipfile);
+     $array     = \PhalApi\DI()->zip->GetZipInnerFilesInfo($zipfile);
      $filecount = 0;
      $dircount  = 0;
      $failfiles = array();
@@ -58,7 +68,7 @@
     
      for($i=0; $i<count($array); $i++) {
          if($array[$i][folder] == 0){
-             if($zip->unZip($zipfile, $savepath, $i) > 0){
+             if(\PhalApi\DI()->zip->unZip($zipfile, $savepath, $i) > 0){
                  $filecount++;
              }else{
                  $failfiles[] = $array[$i][filename];
@@ -79,8 +89,7 @@
             
 获取被压缩文件的信息
         
-    $zip = new Zip_Lite();
-    $array = $zip->GetZipInnerFilesInfo(ZIP压缩文件名);
+    $array = \PhalApi\DI()->zip->GetZipInnerFilesInfo(ZIP压缩文件名);
     for($i=0; $i<count($array); $i++) {
         printf("<b>&middot;%s</b><br>\r\n", $array[$i][filename]);
         foreach($array[$i] as $key => $value)
